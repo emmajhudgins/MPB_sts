@@ -11,7 +11,7 @@ host_coords<-read.table('./Data/Spatial/xycoords.txt')
 host_data<-cbind(host_coords[,2:3], host_data[,2])
 
 host_data2<-vect('./Data/Spatial/full_host.shp')
-host_data2<-as.data.frame(cbind(host_data2$`_mean`, st_coordinates(st_centroid(st_as_sf(host_data2)))))
+host_data2<-as.data.frame(cbind(host_data2$`_mean`/100, st_coordinates(st_centroid(st_as_sf(host_data2)))))
 colnames(host_data)<-colnames(host_data2[c(2,3,1)])
 host_data2<-rbind(host_data, host_data2)
 host_data2<-unique.data.frame(host_data2)
@@ -134,9 +134,9 @@ while(xx!=yy)
   xx<-m$value
 
 }
-saveRDS(m, file="mpb_unmanage_pars_clean.RDS")
+saveRDS(m, file="./Results/mpb_unmanage_pars_clean.RDS")
 
-m<-readRDS('mpb_unmanage_pars_clean.RDS')
+m<-readRDS('./Results/mpb_unmanage_pars_clean.RDS')
 mpb_fit(m$par)
 
 #RMSE
