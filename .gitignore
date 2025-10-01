@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+Data/.DS_Store
+.DS_Store
+.RDataTmp
+.RDataTmp1
+.RDataTmp2
+.bash_history
+/Data/Private
+/scrap
