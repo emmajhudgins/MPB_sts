@@ -1,6 +1,6 @@
 # Mountain Pine Beetle Spatial Prioritisation of Slow-the-Spread
 
-![Results plot](Plots/1-Base/Fig4.eps)
+![Results plot](Plots/1-Base/Fig4.png)
 
 This work accompanies Hudgins et al. (2026) *The value of looking ahead: comparing conventional and strategic Mountain Pine Beetle (Dendroctonus ponderosae) management policies in North America*
 
