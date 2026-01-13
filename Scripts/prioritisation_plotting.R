@@ -16,7 +16,7 @@ data_mpb<-data_mpb[,-c(60:62)]
 scenarios<-c("1-Base", "2-High_eff","3-Low_det","4-High_det", "5-Low_min","6-High_min", "7-Two_bud", "8-C_fix", "9-C_both", "10-Low_bud", "11-Low_eff","12-Lowest_bud", "13-Low_bud_det")
 
 
-scenario<-scenarios[61] #choose from 1 to 13 (using a loop won't print to pdf)
+scenario<-scenarios[1] #choose from 1 to 13 (using a loop won't print to pdf)
 ##load individual sensitivity analysis
 
 empty<-which(rowSums(as.data.frame(data_mpb[,c(7,10,13,16,19,22,25,28,31,34,37,40,43,46,49,52,55,58,61,64,67)])[,1:21])==0)
@@ -180,7 +180,7 @@ q_coordinates$sum<-rowSums(st_drop_geometry(q_coordinates[,3:13]))
 # mapping setup
 set_defaults(map_service = "osm", map_type = "topographic")
 #create new column with binned values of sum c(0,2,4,6,8,10)
-q_coordinates$sum2<-cut(q_coordinates$sum, breaks=c(-2,0,2,4,6,8,10), labels=c(0,2,4,6,8,10))
+q_coordinates$sum2<-cut(q_coordinates$sum, breaks=c(-3,0,3,6,9,12), labels=c(NA,"1-3","4-6","7-9","9-12"))
 st_crs(q_coordinates)<-st_crs(data_mpb)
 box<-st_bbox(st_transform(q_coordinates, st_crs(4326)))
 box<-c(-119.5,53.2,-108,60.9)
@@ -266,8 +266,8 @@ st_bbox(CD_AL)
 
 ## Frequency of management figure
 pdf(paste0('./Plots/',scenario,'/Fig3.pdf'), width=4, height=7)
-g1<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_colour_manual(values=c("NA",rep("black",5)), na.value=NA)+
-  geom_sf(data =st_transform(q_coordinates, st_crs(4326)), aes(colour=sum2,fill = sum2, alpha=sum2>0),pch=22,size=0.7,inherit.aes = FALSE)+
+g1<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_colour_manual(values=c("NA",rep("NA",5)), na.value=NA)+
+  geom_sf(data =st_transform(q_coordinates, st_crs(4326)), aes(colour=sum2,fill = sum2, alpha=sum2>0),pch=22,size=0.6,inherit.aes = FALSE)+
   scale_x_continuous(limits = c(-118.00128,-108.5), expand=c(0,0))+scale_y_continuous(limits = c(53, 58.0006), expand=c(0,0))+
   guides(alpha="none", colour='none')+
   geom_text()+
@@ -276,7 +276,7 @@ g1<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_
     theme(legend.title = element_text(size=10))+
   #guides(fill=guide_legend(title="Management Frequency", position="bottom", direction="horizontal", nrow=1, override.aes = list(size = 5)))+
   #ggtitle("Multiperiod Model")+
-  scale_fill_manual(values=c("NA",brewer.pal(5,'YlGnBu')), breaks=c(0,2,4,6,8,10), na.value = NA, drop=F)+
+  scale_fill_manual(values=c("NA",brewer.pal(4,'YlOrBr')),breaks=as.factor(c(NA,"1-3","4-6","7-9","9-12")), na.value = NA, drop=F)+
   theme_minimal()+theme(
     axis.title.x = element_blank(),  
     axis.title.y = element_blank(),
@@ -296,10 +296,10 @@ g1<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_
         plot.margin = unit(c(0,0,0,0),"mm"))+labs(tag="c.")
 
 q_coordinates$sum_init<-rowSums(results_init_q[,2:12])
-q_coordinates$sum_init2<-cut(q_coordinates$sum_init, breaks=c(-2,0,2,4,6,8,10), labels=c(0,2,4,6,8,10))
+q_coordinates$sum_init2<-cut(q_coordinates$sum_init, breaks=c(-3,0,3,6,9,12), labels=c(NA,"1-3","4-6","7-9","9-12"))
 
-g2<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_colour_manual(values=c("NA",rep("black",5)), na.value=NA)+
-  geom_sf(data =st_transform(q_coordinates, st_crs(4326)), aes(colour=sum_init2,fill = sum_init2, alpha=sum_init2>0),pch=22,size=0.7,inherit.aes = FALSE)+
+g2<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_colour_manual(values=c("NA",rep("NA",5)), na.value=NA)+
+  geom_sf(data =st_transform(q_coordinates, st_crs(4326)), aes(colour=sum_init2,fill = sum_init2, alpha=sum_init2>0),pch=22,size=0.6,inherit.aes = FALSE)+
   scale_x_continuous(limits = c(-118.00128,-108.5), expand=c(0,0))+scale_y_continuous(limits = c(53, 58.0006), expand=c(0,0))+
   guides(alpha="none", colour='none')+
   geom_text()+
@@ -308,7 +308,7 @@ g2<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_
   theme(legend.title = element_text(size=10))+
   guides(fill=guide_legend(title="Management Frequency", position="bottom", direction="horizontal", nrow=1, override.aes = list(size = 5)))+
   #ggtitle("Single Period + Spread Model")+
-  scale_fill_manual(values=c("NA",brewer.pal(5,'YlGnBu')), breaks=c(0,2,4,6,8,10), na.value = NA, drop=F)+
+  scale_fill_manual(values=c("NA",brewer.pal(3,'YlOrBr')),breaks=as.factor(c(NA,"1-3","4-6","7-9","9-12")), na.value = NA, drop=F)+
   theme_minimal()+theme(
     axis.title.x = element_blank(),  
     axis.title.y = element_blank(),
@@ -328,10 +328,10 @@ g2<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_
         plot.margin = unit(c(0,0,0,0),"mm"))+labs(tag="b.")
 
 q_coordinates$sum_heur<-rowSums(results_heur_q[,2:12])
-q_coordinates$sum_heur2<-cut(q_coordinates$sum_heur, breaks=c(-2,0,2,4,6,8,10), labels=c(0,2,4,6,8,10))
+q_coordinates$sum_heur2<-cut(q_coordinates$sum_heur, breaks=c(-3,0,3,6,9,12), labels=c(NA,"1-3","4-6","7-9","9-12"))
 
-g3<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_colour_manual(values=c("NA",rep("black",5)), na.value=NA)+
-  geom_sf(data =st_transform(q_coordinates, st_crs(4326)), aes(colour=sum_heur2,fill = sum_heur2, alpha=sum_heur2>0),pch=22,size=0.7,inherit.aes = FALSE)+
+g3<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_colour_manual(values=c("NA",rep("NA",5)), na.value=NA)+
+  geom_sf(data =st_transform(q_coordinates, st_crs(4326)), aes(colour=sum_heur2,fill = sum_heur2, alpha=sum_heur2>0),pch=22,size=0.6,inherit.aes = FALSE)+
   scale_x_continuous(limits = c(-118.00128,-108.5), expand=c(0,0))+scale_y_continuous(limits = c(53, 58.0006), expand=c(0,0))+
   guides(alpha="none", colour='none')+
   geom_text()+
@@ -340,7 +340,7 @@ g3<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_
   theme(legend.title = element_text(size=10))+
   guides(fill=guide_legend(title="Management Frequency", position="bottom", direction="horizontal", nrow=1, override.aes = list(size = 5)))+
   #ggtitle("Single Period Model")+
-  scale_fill_manual(values=c("NA",brewer.pal(5,'YlGnBu')), breaks=c(0,2,4,6,8,10), na.value = NA, drop=F)+
+  scale_fill_manual(values=c("NA",brewer.pal(3,'YlOrBr')),breaks=as.factor(c(NA,"1-3","4-6","7-9","9-12")), na.value = NA, drop=F)+
   theme_minimal()+theme(
     axis.title.x = element_blank(),  
     axis.title.y = element_blank(),
@@ -358,24 +358,25 @@ g3<-ggplot()+geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_
         panel.grid.minor = element_blank(),
         plot.background = element_blank(), 
         plot.margin = unit(c(0,0,0,0),"mm"))+labs(tag="a.")
-g4<-ggplot(data =data.frame(sum_heur2=as.factor(c(0,2,4,6,8,10)), x=c(1:6), y=c(1:6)), aes(x=x,y=y,fill = sum_heur2))+
+g4<-ggplot(data =data.frame(sum_heur2=as.factor(c("1-3","4-6","7-9", "10")), x=c(1:4), y=c(1:4)), aes(x=x,y=y,fill = sum_heur2))+
   geom_point(pch=22)+
   theme_minimal()+
-  guides(fill=guide_legend(title="Management\n Frequency", position="bottom", direction="horizontal", nrow=3, override.aes = list(size = 5), theme=theme(legend.title=element_text(size=10))))+
-  scale_fill_manual(values=c("NA",brewer.pal(5,'YlGnBu')),breaks=as.factor(c(0,2,4,6,8,10)), na.value = NA, drop=F)
+  guides(fill=guide_legend(title="Management\n Frequency", position="bottom", direction="horizontal", nrow=2, byrow=T,override.aes = list(size = 5), theme=theme(legend.title=element_text(size=10))))+
+  scale_fill_manual(values=c(brewer.pal(4,'YlOrBr')),breaks=as.factor(c("1-3","4-6","7-9","10")), na.value = NA, drop=F)
   
 ggarrange(g3, g2, g1, ncol=1, nrow=3, legend.grob=get_legend(g4), legend="bottom", common.legend=T)
 dev.off()
 
-pdf(paste0("./Plots/",scenario,"/Fig4.pdf"), width=7, height=5)
+pdf(paste0("./Plots/",scenario,"/Fig4.pdf"), width=7, height=5.5)
 ggplot()+
   geom_cd(data = CD_AL, colour = "black", size = 0.2, fill=NA)+scale_fill_identity()+
-  geom_sf(data =st_transform(w_coordinates, st_crs(4326)), aes(colour = first_inf_heur2),pch=15,size=0.8,inherit.aes = FALSE)+
-  scale_x_continuous(limits = c(-120.00128,-108.5), expand=c(0,0))+scale_y_continuous(limits = c(48.9975, 60.0006), expand=c(0,0))+
+  geom_sf(data =st_transform(w_coordinates, st_crs(4326)), aes(colour = first_inf_heur2),pch=15,size=0.7,inherit.aes = FALSE)+
+  #scale_x_continuous(limits = c(-120.00128,-108.5), expand=c(0,0))+scale_y_continuous(limits = c(48.9975, 60.0006), expand=c(0,0))+
+  scale_x_continuous(limits = c(-118.00128,-108.5), expand=c(0,0))+scale_y_continuous(limits = c(53, 58.0006), expand=c(0,0))+
   guides(alpha="none")+
   geom_text()+
-  annotate("text",label="ALBERTA", colour="darkgrey", x=-117.0, y=57.7, size=2)+
-  annotate("text",label="SASKATCHEWAN", colour="darkgrey", x=-109.5, y=56.7, size=2, angle=270)+
+  annotate("text",label="ALBERTA", colour="darkgrey", x=-117.0, y=57.7, size=5)+
+  annotate("text",label="SASKATCHEWAN", colour="darkgrey", x=-109.5, y=56.7, size=5, angle=270)+
   theme(legend.title = element_text(size=10))+
   guides(colour=guide_legend(title=NULL, position="inside", direction="vertical", ncol=1, override.aes = list(size = 3)))+
   ggtitle("Relative time of infestation")+
