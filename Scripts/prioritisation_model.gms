@@ -289,14 +289,8 @@ w_max = %popmax%;     // maximum population density at which the population can 
 mask(n,t)$(m_No eq 3) = 1;
 
 *Parameter w_spr(n), G(n);   // Generating the site-specific spread rate and min spread density based on host abundance
-//w_spr(n)= w_spr0; // start with the baseline min spread density w_spr0
-////w_spr(n)$(host(n) < 0.12 and host(n) ge 0.06) = w_spr0*1.5;
-//w_spr(n)$(host(n) < 0.11 ) = w_spr0*2; // increase the min spread density threshold for sites with low host abundance
-
 *w_spr(n)$(w_spr(n) > 0.026) = 0.026;
 *w_spr(n)$(w_spr(n) < 0.014) = 0.014;
-*//w_spr(n) = w_spr0;
-*//G(n)=g0;
 *G(n)$(G(n) >1.885)=1.885;
 *G(n)$(G(n) <1.015)=1.015;
 
@@ -720,7 +714,7 @@ model p_inf1_cost  /
               fix_u_t_  fix_q_t_ fix_w_t_   fix_q_t_0
               /
 
-* Obne-period  model to build a feasible solution - solves T one-period problems in sequence.
+* One-period  model to build a feasible solution - solves T one-period problems in sequence.
 * Start from t_set=2 until t_set=t_ . After each solve starting from t=2,
 * the model saves the decision variables, which are loaded on the next solving step, t=3,...,T
 * After solving the initialization sequence for all t_ = T periods, the solutuion
